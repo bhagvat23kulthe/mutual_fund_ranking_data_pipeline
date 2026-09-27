@@ -1,6 +1,6 @@
 # Mutual Fund Ranking Pipeline
 
-A cloud-based data pipeline that cleans, scores, and ranks mutual funds across multiple categories using returns, expense ratio, and risk rating — built to simulate a real-world, end-to-end data engineering workflow on AWS.
+A cloud-based data pipeline that cleans, scores and ranks mutual funds across multiple categories using returns, expense ratio and risk rating built to simulate a real world, end to end data engineering workflow on AWS.
 
 ## Overview
 
