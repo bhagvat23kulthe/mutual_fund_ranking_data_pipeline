@@ -1,160 +1,41 @@
-# Mutual Fund Data Engineering Project
+# Mutual Fund Ranking Pipeline
 
-## 📌 Project Overview
+A cloud-based data pipeline that cleans, scores, and ranks mutual funds across multiple categories using returns, expense ratio, and risk rating — built to simulate a real-world, end-to-end data engineering workflow on AWS.
 
-This project is an end to end Mutual Fund Data Engineering and Analysis project built using Python, Pandas, NumPy, Amazon S3, Snowflake, and SQL.
+## Overview
 
-The project takes mutual fund data performs data cleaning and transformation using Python, calculates performance metrics and rankings, stores the raw data in Amazon S3, loads the final processed dataset into Snowflake and performs SQL based analysis to generate useful insights.
+This project takes raw mutual fund data (15 funds across 6 categories) and produces a fair, weighted ranking by normalizing metrics that are otherwise measured on different scales. It also demonstrates a full cloud data pipeline: ingestion, transformation, cataloging, warehousing, and orchestration.
 
----
+## Tech Stack
 
-## 🏗️ Project Architecture
+- **Languages:** Python, SQL
+- **Data Processing:** Pandas, NumPy
+- **Cloud Storage:** Amazon S3 (raw, processed, curated folders)
+- **Cataloging:** AWS Glue (Crawler, Data Catalog)
+- **Data Warehousing:** Snowflake, Amazon Redshift
+- **Ad-hoc Querying:** Amazon Athena
+- **Orchestration:** AWS Step Functions, Apache Airflow (AWS MWAA)
+s
+## Pipeline Flow
 
-```text
-                 Mutual Fund CSV
-                       │
-                       ▼
-              Python / Pandas / NumPy
-                       │
-                       ▼
-          Data Cleaning & Transformation
-                       │
-                       ▼
-          Mutual Fund Ranking & Scoring
-                       │
-                       ▼
-             Final Processed CSV
-                       │
-                       ▼
-                 AWS S3 Bucket
-                       │
-                       ▼
-               Snowflake Stage
-                       │
-                       ▼
-             Snowflake Table
-                       │
-                       ▼
-                 SQL Analysis
-                       │
-                       ▼
-              Insights & Rankings
+1. **Ingestion** – Raw mutual fund CSV data is uploaded to Amazon S3 (raw folder).
+2. **Cleaning & Validation** – Duplicates removed, data types fixed, missing values handled using Pandas.
+3. **Scoring** – A weighted composite score normalizes returns, expense ratio and risk rating onto a common scale for fair cross category comparison.
+4. **Cataloging** – An AWS Glue Crawler catalogs the S3 data for querying.
+5. **Warehousing** – Final ranked dataset is loaded into Snowflake and Amazon Redshift via S3 stages.
+6. **Analytics** – SQL queries (GROUP BY, ORDER BY, aggregations) rank funds, compare categories, and break down individual scores.
+7. **Ad-hoc Queries** – Amazon Athena runs direct queries on S3 files without needing a warehouse.
+8. **Orchestration** – The entire pipeline is automated end-to-end using AWS Step Functions (with retry/error handling) and an Apache Airflow DAG (AWS MWAA).
 
+## Output
 
-              ## 🛠️ Technologies Used
+- `Final_Mutual_Fund_Ranking.csv` — final ranked dataset (16 columns, 15 records)
+- Category-wise and overall fund rankings
+- Analytics on average returns and expense ratios by category
 
+## Key Learnings
 
-
-### Programming & Data Processing
-- Python
-- Pandas
-- NumPy
-
-### AWS
-- Amazon S3
-- AWS Glue Crawler
-- AWS Glue
-- IAM
-
-### Data Warehouse & SQL
-- Snowflake
-- SQL
-
-### Version Control
-- Git
-- GitHub
-
-
----
-
-## 📊 Dataset
-
-The dataset contains mutual fund information including:
-
-- Fund Name
-- Category
-- 1-Year Return
-- 3-Year Return
-- 5-Year Return
-- Expense Ratio
-- Risk Rating
-- AUM (Assets Under Management)
-
-The final processed dataset also contains calculated ranking and scoring columns.
-
----
-
-## 🐍 Python Data Processing
-
-Python was used for:
-
-- Loading the mutual fund dataset
-- Data cleaning and validation
-- Duplicate checking
-- Missing value validation
-- Data type validation
-- Return calculations
-- Performance scoring
-- Expense ranking
-- Risk scoring
-- Final ranking
-- Exporting the processed dataset
-
-The final processed file is:
-
-`output/final_mutual_fund_ranking.csv`
-
----
-
-## ☁️ AWS S3
-
-Amazon S3 was used as the cloud storage layer.
-
-### S3 Bucket Structure
-
-```text
-mutual-fund-data-engineering-bhagvat-2026/
-│
-├── raw/
-│   └── mutual_funds.csv
-│
-├── processed/
-│
-└── curated/
-
-
-❄️ Snowflake
-
-Snowflake was used as the cloud data warehouse for storing and analyzing the processed mutual fund data.
-
-Database
-
-SNOWFLAKE_LEARNING_DB
-
-Schema
-
-MUTUAL_FUND
-
-Table
-
-MUTUAL_FUNDS
-
-The final processed CSV was loaded into Snowflake.
-
-The table contains 16 columns covering:
-
-Fund information
-Returns
-Expense ratio
-Risk rating
-AUM
-Average return
-Performance rank
-Expense rank
-Risk score
-Return score
-Expense score
-Performance score
-Final rank
-
-The table contains 15 mutual fund records.
+- Designing a fair, normalized scoring system across heterogeneous metrics
+- Structuring S3 storage using raw/processed/curated conventions
+- Building fault-tolerant pipelines with validation and error-handling branches
+- Orchestrating multi-step cloud workflows with Step Functions and Airflow
